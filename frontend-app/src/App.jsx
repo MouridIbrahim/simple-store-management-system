@@ -1,121 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { Routes, Route } from 'react-router-dom'
+
+// Layouts
+import StoreLayout from './components/StoreLayout'
+import AdminLayout from './components/AdminLayout'
+import AccountLayout from './components/AccountLayout'
+import ProtectedRoute from './components/ProtectedRoute'
+
+// Public pages
+import Home from './pages/Home'
+import Shop from './pages/Shop'
+import ProductDetails from './pages/ProductDetails'
+import Login from './pages/Login'
+import Register from './pages/Register'
+import ForgotPassword from './pages/ForgotPassword'
+import Wishlist from './pages/Wishlist'
+
+// Protected customer pages
+import Cart from './pages/Cart'
+import Checkout from './pages/Checkout'
+import OrderSuccess from './pages/OrderSuccess'
+
+// Account pages
+import AccountDashboard from './pages/account/Dashboard'
+import AccountOrders from './pages/account/Orders'
+import AccountOrderDetail from './pages/account/OrderDetail'
+
+// Admin pages
+import AdminDashboard from './pages/admin/AdminDashboard'
+import ProductManagement from './pages/admin/ProductManagement'
+import OrderManagement from './pages/admin/OrderManagement'
+import CustomerManagement from './pages/admin/CustomerManagement'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
+    <Routes>
+      {/* ─── Public storefront routes ─── */}
+      <Route element={<StoreLayout />}>
+        <Route path="/" element={<Home />} />
+        <Route path="/shop" element={<Shop />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/* ─── Protected customer routes ─── */}
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <Cart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/order-success"
+          element={
+            <ProtectedRoute>
+              <OrderSuccess />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ─── Account sub-routes ─── */}
+        <Route
+          path="/account"
+          element={
+            <ProtectedRoute>
+              <AccountLayout />
+            </ProtectedRoute>
+          }
         >
-          Count is {count}
-        </button>
-      </section>
+          <Route index element={<AccountDashboard />} />
+          <Route path="orders" element={<AccountOrders />} />
+          <Route path="orders/:id" element={<AccountOrderDetail />} />
+        </Route>
+      </Route>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      {/* ─── Admin routes (role-gated) ─── */}
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute adminOnly>
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="products" element={<ProductManagement />} />
+        <Route path="orders" element={<OrderManagement />} />
+        <Route path="customers" element={<CustomerManagement />} />
+      </Route>
+    </Routes>
   )
 }
 
