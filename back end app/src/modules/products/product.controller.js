@@ -29,6 +29,7 @@ const createProduct = async (
 
 
 const getProducts = async (
+    req,
     res,
     next
 ) => {

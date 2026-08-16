@@ -5,7 +5,7 @@ const router = express.Router();
 const productController =
     require("./product.controller");
 
-const authenticate =
+const { authenticate } =
     require("../auth/auth.middleware");
 
 
