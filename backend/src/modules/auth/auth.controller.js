@@ -83,7 +83,65 @@ const login = async (
 };
 
 
+const forgotPassword = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                message: "Email is required"
+            });
+        }
+
+        const result =
+            await authService.forgotPassword({ email });
+
+        res.status(200).json(result);
+
+    } catch (error) {
+
+        next(error);
+    }
+};
+
+
+const resetPassword = async (
+    req,
+    res,
+    next
+) => {
+
+    try {
+
+        const { token, password } = req.body;
+
+        if (!token || !password) {
+            return res.status(400).json({
+                message: "Token and password are required"
+            });
+        }
+
+        const result =
+            await authService.resetPassword({ token, password });
+
+        res.status(200).json(result);
+
+    } catch (error) {
+
+        next(error);
+    }
+};
+
+
 module.exports = {
     register,
-    login
+    login,
+    forgotPassword,
+    resetPassword
 };

@@ -67,7 +67,10 @@ export default function ForgotPassword() {
           {resetUrl && (
             <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: 'var(--spacing-md)' }}>
               Dev mode —{' '}
-              <Link to={resetUrl.replace(window.location.origin, '')} style={{ color: 'var(--accent)', wordBreak: 'break-all' }}>
+              <Link
+                to={`/reset-password?token=${new URL(resetUrl).searchParams.get('token')}`}
+                style={{ color: 'var(--accent)', wordBreak: 'break-all' }}
+              >
                 click here to reset
               </Link>
             </p>
