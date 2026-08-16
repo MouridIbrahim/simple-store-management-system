@@ -1,5 +1,9 @@
 const express = require("express");
 const app = express();
+const connectDb = require("./src/config/database");
+
+// Connect to MongoDB
+connectDb();
 
 const authRoutes = require("./src/modules/auth/auth.routes");
 const productRoutes = require("./src/modules/products/product.routes");
