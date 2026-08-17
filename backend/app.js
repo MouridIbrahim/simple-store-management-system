@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
 const connectDb = require("./src/config/database");
-
-// Connect to MongoDB
-connectDb();
+const AppError = require("./src/utils/appError");
 
 const authRoutes = require("./src/modules/auth/auth.routes");
 const productRoutes = require("./src/modules/products/product.routes");
@@ -41,6 +39,19 @@ app.use(express.json());
 
 app.get("/api/health", (req, res) => {
   res.status(200).json({ status: "ok" });
+});
+
+// Ensure the database is ready before handlers use Mongoose. A failed
+// connection becomes a normal 503 response instead of crashing a Vercel
+// function process.
+app.use("/api", async (req, res, next) => {
+  try {
+    await connectDb();
+    next();
+  } catch (error) {
+    console.error("Database connection failed", error.message);
+    next(new AppError("Database is temporarily unavailable", 503));
+  }
 });
 
 // Routes
